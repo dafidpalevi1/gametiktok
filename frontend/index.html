@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>TikTok Gift Dance Game</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background: #111;
+      color: #fff;
+    }
+    h1 { margin-top: 20px; }
+
+    #gift-display {
+      margin-top: 20px;
+    }
+    #gift-animation {
+      width: 250px;
+      height: 250px;
+      margin: 0 auto;
+    }
+    #gift-name {
+      margin-top: 10px;
+      font-size: 22px;
+      font-weight: bold;
+      color: #ffcc00;
+    }
+
+    #gift-buttons {
+      margin-top: 30px;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+    .gift-btn {
+      width: 120px;
+      height: 160px;
+      background: #222;
+      border-radius: 12px;
+      border: 2px solid #444;
+      cursor: pointer;
+      transition: 0.3s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 10px;
+    }
+    .gift-btn:hover {
+      border-color: #ff0050;
+      transform: scale(1.05);
+    }
+    .gift-btn img {
+      width: 60px;
+      height: 60px;
+      margin-bottom: 8px;
+    }
+    .gift-name {
+      font-size: 16px;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    .gift-coins {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      font-size: 14px;
+      color: #ffcc00;
+    }
+    .gift-coins img {
+      width: 18px;
+      height: 18px;
+    }
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+  <h1>🎁 TikTok Gift Dance Game 🎵</h1>
+
+  <div id="gift-display">
+    <div id="gift-animation" class="hidden"></div>
+    <div id="gift-name" class="hidden"></div>
+  </div>
+
+  <div id="gift-buttons"></div>
+
+  <audio id="audio-gift" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.7.4/lottie.min.js"></script>
+  <script>
+    const API_URL = "https://giftdance-backend.onrender.com/gifts"; // ganti dengan URL backendmu
+    const giftButtons = document.getElementById("gift-buttons");
+    const giftNameEl = document.getElementById("gift-name");
+    const animationContainer = document.getElementById("gift-animation");
+    let currentAnimation = null;
+
+    async function loadGifts() {
+      const res = await fetch(API_URL);
+      const gifts = await res.json();
+      renderGifts(gifts);
+    }
+
+    function renderGifts(gifts) {
+      giftButtons.innerHTML = "";
+      gifts.forEach(gift => {
+        const div = document.createElement("div");
+        div.className = "gift-btn";
+        div.innerHTML = `
+          <img src="${gift.image}" alt="${gift.name}">
+          <div class="gift-name">${gift.name}</div>
+          <div class="gift-coins">
+            <span>${gift.coins}</span>
+            <img src="https://cdn3d.iconscout.com/3d/free/thumb/free-tiktok-coin-3d-icon-png-download-6220601.png" alt="coin">
+          </div>
+        `;
+        div.onclick = () => triggerDance(gift);
+        giftButtons.appendChild(div);
+      });
+    }
+
+    function triggerDance(gift) {
+      // Reset audio
+      const audio = document.getElementById("audio-gift");
+      audio.pause();
+      audio.currentTime = 0;
+
+      // Reset animasi
+      if (currentAnimation) {
+        currentAnimation.destroy();
+        currentAnimation = null;
+      }
+      animationContainer.innerHTML = "";
+
+      giftNameEl.textContent = `${gift.name} (${gift.coins} koin)`;
+      giftNameEl.classList.remove("hidden");
+
+      currentAnimation = lottie.loadAnimation({
+        container: animationContainer,
+        renderer: 'svg',
+        loop: true,
+        autoplay: true,
+        path: "https://assets6.lottiefiles.com/packages/lf20_touohxv0.json" // bisa disesuaikan tiap gift
+      });
+      animationContainer.classList.remove("hidden");
+
+      audio.play();
+
+      setTimeout(() => {
+        if (currentAnimation) {
+          currentAnimation.destroy();
+          animationContainer.classList.add("hidden");
+          giftNameEl.classList.add("hidden");
+        }
+        audio.pause();
+        audio.currentTime = 0;
+      }, 5000);
+    }
+
+    loadGifts();
+  </script>
+</body>
+</html>

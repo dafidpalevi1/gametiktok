@@ -1,0 +1,15 @@
+[
+    {
+      "id": 1,
+      "name": "Mawar",
+      "coins": 1,
+      "image": "https://p19-webcast.tiktokcdn.com/img/maliva/webcast-va/eba3a9bb85c33e017f3648eaf88d7189~tplv-obj.png"
+    },
+    {
+      "id": 2,
+      "name": "Donat",
+      "coins": 30,
+      "image": "https://p19-webcast.tiktokcdn.com/img/maliva/webcast-va/4e7ad6bdf0a1d860c538f38026d4e812~tplv-obj.png"
+    }
+  ]
+  
